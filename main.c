@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define rows 75
-#define columns 75
+#define rows 75 * 2
+#define columns 75 * 2
 #define width 1200
 #define height 800
 #define maxWidth 5000
@@ -98,7 +98,6 @@ void randomSeed() {
 }
 
 int main() {
-  // TODO: Add camera functionality or some shit
   srand(time(NULL));
   InitWindow(width, height, "Game of Life");
   SetTargetFPS(60);
@@ -138,7 +137,7 @@ int main() {
       zoom -= .01f;
     }
     if (zoom > 2.f) zoom = 2.f;
-    if (zoom < .4f) zoom = .4f;
+    if (zoom < .1f) zoom = .1f;
     camera.zoom = zoom;
     camera.target = *target;
     timeSinceLastMove += GetFrameTime();
