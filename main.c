@@ -2,10 +2,12 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define rows 50
-#define columns 50
+#define rows 75
+#define columns 75
 #define width 1200
 #define height 800
+#define maxWidth 5000
+#define maxHeight 5000
 
 // 0 = empty, 1 = alive, 2 = will die, 3 = will be born
 
@@ -14,8 +16,8 @@ int grid[rows][columns] = {0};
 void drawGrid() {
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < columns; j++) {
-      DrawRectangleLines(j * width / columns, i * height / rows,
-                         width / columns, height / rows, GRAY);
+      DrawRectangleLines(j * maxWidth / columns, i * maxHeight / rows,
+                         maxWidth / columns, maxHeight / rows, GRAY);
     }
   }
 }
@@ -24,8 +26,8 @@ void drawTiles() {
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < columns; j++) {
       if (grid[i][j] == 1) {
-        DrawRectangle(j * width / columns, i * height / rows, width / columns,
-                      height / rows, GRAY);
+        DrawRectangle(j * maxWidth / columns, i * maxHeight / rows,
+                      maxWidth / columns, maxWidth / rows, GRAY);
       }
     }
   }
@@ -101,24 +103,60 @@ int main() {
   InitWindow(width, height, "Game of Life");
   SetTargetFPS(60);
   float timeSinceLastMove = 0;
-  float timeInterval = .1f;
+  float timeInterval = .05f;
   int iterations = 0;
+
+  Vector2 *target = &((Vector2){.x = maxWidth / 2.f, .y = maxHeight / 2.f});
+
+  float zoom = 1.f;
+
+  Camera2D camera = {0};
+  camera.zoom = zoom;
+  camera.rotation = 0;
+  camera.offset = (Vector2){.x = width / 2.f, .y = height / 2.f};
+  camera.target = *target;
 
   randomSeed();
 
   while (!WindowShouldClose()) {
+    if (IsKeyDown(KEY_W)) {
+      target->y -= 20.f; 
+    }
+    if (IsKeyDown(KEY_A)) {
+      target->x -= 20.f;
+    }
+    if (IsKeyDown(KEY_S)) {
+      target->y += 20.f;
+    }
+    if (IsKeyDown(KEY_D)) {
+      target->x += 20.f;
+    }
+    if (IsKeyDown(KEY_I)) {
+      zoom += .01f;
+    }
+    if (IsKeyDown(KEY_O)) {
+      zoom -= .01f;
+    }
+    if (zoom > 2.f) zoom = 2.f;
+    if (zoom < .4f) zoom = .4f;
+    camera.zoom = zoom;
+    camera.target = *target;
     timeSinceLastMove += GetFrameTime();
-    BeginDrawing();
-    ClearBackground(BLACK);
     if (timeSinceLastMove >= timeInterval) {
       gameCheck();
       updateGame();
       iterations++;
       timeSinceLastMove = 0.f;
     }
+    BeginDrawing();
+    BeginMode2D(camera);
+    ClearBackground(BLACK);
     drawTiles();
     drawGrid();
-    DrawText(TextFormat("Iterations: %i", iterations), 0, 0, 24, RAYWHITE);
+    EndMode2D();
+    DrawText(TextFormat("Iterations: %i", iterations), 0, height - 24, 24,
+             RAYWHITE);
+    DrawFPS(0, 0);
     EndDrawing();
   }
   return 0;
