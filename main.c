@@ -96,11 +96,13 @@ void randomSeed() {
 }
 
 int main() {
+  // TODO: Add camera functionality or some shit
   srand(time(NULL));
   InitWindow(width, height, "Game of Life");
   SetTargetFPS(60);
   float timeSinceLastMove = 0;
   float timeInterval = .1f;
+  int iterations = 0;
 
   randomSeed();
 
@@ -111,10 +113,12 @@ int main() {
     if (timeSinceLastMove >= timeInterval) {
       gameCheck();
       updateGame();
+      iterations++;
       timeSinceLastMove = 0.f;
     }
     drawTiles();
     drawGrid();
+    DrawText(TextFormat("Iterations: %i", iterations), 0, 0, 24, RAYWHITE);
     EndDrawing();
   }
   return 0;
