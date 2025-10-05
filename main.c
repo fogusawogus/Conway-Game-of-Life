@@ -102,7 +102,7 @@ int main() {
   InitWindow(width, height, "Game of Life");
   SetTargetFPS(60);
   float timeSinceLastMove = 0;
-  float timeInterval = .05f;
+  float timeInterval = .1f;
   int iterations = 0;
 
   Vector2 *target = &((Vector2){.x = maxWidth / 2.f, .y = maxHeight / 2.f});
@@ -119,16 +119,16 @@ int main() {
 
   while (!WindowShouldClose()) {
     if (IsKeyDown(KEY_W)) {
-      target->y -= 20.f; 
+      target->y -= 50.f;
     }
     if (IsKeyDown(KEY_A)) {
-      target->x -= 20.f;
+      target->x -= 50.f;
     }
     if (IsKeyDown(KEY_S)) {
-      target->y += 20.f;
+      target->y += 50.f;
     }
     if (IsKeyDown(KEY_D)) {
-      target->x += 20.f;
+      target->x += 50.f;
     }
     if (IsKeyDown(KEY_I)) {
       zoom += .01f;
@@ -136,8 +136,18 @@ int main() {
     if (IsKeyDown(KEY_O)) {
       zoom -= .01f;
     }
-    if (zoom > 2.f) zoom = 2.f;
-    if (zoom < .1f) zoom = .1f;
+    if (IsKeyDown(KEY_F))
+      timeInterval -= .005f;
+    if (IsKeyDown(KEY_R))
+      timeInterval += .005f;
+    if (timeInterval < .05f)
+      timeInterval = .05f;
+    if (timeInterval > .25f)
+      timeInterval = .25f;
+    if (zoom > 2.f)
+      zoom = 2.f;
+    if (zoom < .1f)
+      zoom = .1f;
     camera.zoom = zoom;
     camera.target = *target;
     timeSinceLastMove += GetFrameTime();
@@ -155,6 +165,8 @@ int main() {
     EndMode2D();
     DrawText(TextFormat("Iterations: %i", iterations), 0, height - 24, 24,
              RAYWHITE);
+    DrawText(TextFormat("Time interval: %.3f", timeInterval), 0,
+             height - 24 * 2, 24, RAYWHITE);
     DrawFPS(0, 0);
     EndDrawing();
   }
