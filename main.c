@@ -17,7 +17,7 @@ void drawGrid() {
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < columns; j++) {
       DrawRectangleLines(j * maxWidth / columns, i * maxHeight / rows,
-                         maxWidth / columns, maxHeight / rows, GRAY);
+                         maxWidth / columns, maxHeight / rows, BLACK);
     }
   }
 }
@@ -27,7 +27,7 @@ void drawTiles() {
     for (int j = 0; j < columns; j++) {
       if (grid[i][j] == 1) {
         DrawRectangle(j * maxWidth / columns, i * maxHeight / rows,
-                      maxWidth / columns, maxWidth / rows, GRAY);
+                      maxWidth / columns, maxWidth / rows, RAYWHITE);
       }
     }
   }
@@ -41,10 +41,10 @@ void gameCheck() {
       // checks the square around the selected point
       for (int x = -1; x < 2; x++) {
         for (int z = -1; z < 2; z++) {
-          if (j + z < 0 || j + z > columns) {
+          if (j + z < 0 || j + z >= columns) {
             continue;
           }
-          if (x + i < 0 || x + i > rows) {
+          if (x + i < 0 || x + i >= rows) {
             continue;
           }
           if (x == 0 && z == 0) {
